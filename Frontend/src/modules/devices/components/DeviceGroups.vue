@@ -1,6 +1,6 @@
 <script setup>
 import { computed, reactive, ref, watchEffect } from 'vue'
-import { api } from '../services/api'
+import { api } from '../services/api.js'
 import DeviceEditModal from './DeviceEditModal.vue'
 
 const props = defineProps({
@@ -407,3 +407,4 @@ function confirmLabel() {
     />
   </section>
 </template>
+

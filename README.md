@@ -1,124 +1,85 @@
 # Verificador de Ping
 
-Aplicação full stack para monitoramento de disponibilidade de dispositivos em rede, com foco em operação: destacar rapidamente o que está offline e reduzir ruído de oscilação.
+Projeto fullstack para monitoramento de disponibilidade de dispositivos de rede, com frontend no Vercel e backend no Render, usando MongoDB Atlas como persistencia.
 
-## Stack
+## Tecnologias
 
-- Frontend: Vue 3 + Vite + Axios
-- Backend: Node.js + Express 5 + Ping + Axios
-- Persistência atual: arquivo JSON (`data/devices.json`)
-- Notificação opcional: Telegram Bot API
+- Frontend: Vue 3, Vite, Pinia, Axios
+- Backend: Node.js, Express 5, Mongoose, ping, Axios
+- Banco: MongoDB Atlas
 
-## Funcionalidades
-
-- Cadastro de dispositivos por grupo
-- Dashboard orientado à exceção (mostra foco em indisponibilidade)
-- Monitoramento periódico com histerese para reduzir flapping
-- Edição sequencial e exclusão em lote por grupo
-- Toasts e notificações do navegador
-- Histórico de transições de status em memória
-- Envio de alertas para Telegram (quando configurado)
-
-## Arquitetura
-
-```text
-Frontend (Vue)
-    |
-    | HTTP
-    v
-Backend (Express)
-    |
-    | leitura/escrita
-    v
-data/devices.json
-```
-
-Fluxo principal:
-
-1. backend sobe e roda o primeiro ciclo de monitoramento
-2. monitoramento roda novamente a cada 60s
-3. frontend atualiza dados em polling de 5s
-4. alertas disparam apenas em transição confirmada de estado
-
-## Como executar localmente
-
-Pré-requisitos:
-
-- Node.js 20+
-- npm 10+
-
-### 1. Backend
+## Como instalar
 
 ```bash
-cd Backend
-npm install
-npm run dev
+npm --prefix Backend install
+npm --prefix Frontend install
 ```
 
-Backend em `http://localhost:3000` (padrão).
-
-### 2. Frontend
+## Como rodar
 
 ```bash
-cd Frontend
-npm install
-npm run dev
+npm run dev:backend
+npm run dev:frontend
 ```
 
-Frontend em `http://localhost:5173` (padrão).
+## Variaveis de ambiente
 
-## Variáveis de ambiente (Backend)
-
-Crie `Backend/.env` com base em `Backend/.env.example`.
+Backend (`Backend/.env`):
 
 ```env
 DEV_PORT=3000
 WEBAPP_PORT=3004
-TELEGRAM_BOT_TOKEN=seu_token
-TELEGRAM_CHAT_ID=seu_chat_id
+MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority
+MONGO_DB_NAME=ping_monitor
+PING_TIMEOUT_SECONDS=2
+MONITORING_INTERVAL_MS=60000
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
 ```
 
-As variáveis do Telegram são opcionais. Sem elas, o monitoramento continua funcionando normalmente.
+Frontend (`Frontend/.env`):
 
-## Estrutura do repositório
+```env
+VITE_API_BASE_URL=http://localhost:3000
+```
+
+## Endpoints
+
+- `GET /health`
+- `GET /devices`
+- `POST /devices`
+- `PUT /devices/:id`
+- `POST /devices/bulk-delete`
+- `GET /events`
+
+## Estrutura
 
 ```text
-.
-|-- README.md
-|-- data/
-|   `-- devices.json
-|-- Frontend/
-|   |-- README.md
-|   `-- src/
-`-- Backend/
-    |-- README.md
-    `-- src/
+Backend/src
+|- app/
+|- config/
+|- constants/
+|- controllers/
+|- database/
+|  |- connection.js
+|  `- models/
+|- errors/
+|- middlewares/
+|- repositories/
+|- routes/
+|- services/
+`- validators/
 ```
 
-Detalhes por camada:
+## Deploy (Vercel + Render + Atlas)
 
-- Frontend: [Frontend/README.md](Frontend/README.md)
-- Backend: [Backend/README.md](Backend/README.md)
+1. MongoDB Atlas: criar cluster, usuario e liberar IP do Render.
+2. Render (backend): configurar `MONGO_URI`, `MONGO_DB_NAME` e demais envs.
+3. Vercel (frontend): configurar `VITE_API_BASE_URL` com URL publica do Render.
+4. Backend: habilitar CORS para o dominio do frontend em producao (proximo passo recomendado).
 
-## Decisões técnicas
+## Proximas melhorias
 
-- Persistência em JSON fora da pasta do backend para evitar restart indevido do `nodemon` durante desenvolvimento.
-- Histerese no monitoramento:
-  - offline após `3` falhas consecutivas
-  - online após `2` sucessos consecutivos
-- Rotas de leitura usam snapshot em memória do monitor, não leitura direta de arquivo.
-
-## Limitações atuais
-
-- Sem autenticação na API
-- Sem testes automatizados
-- Histórico de eventos apenas em memória
-- Persistência em arquivo (bom para pequeno volume, não ideal para escala)
-
-## Próximos passos sugeridos
-
-- Adicionar suíte de testes (backend + frontend)
-- Persistir eventos em banco ou arquivo dedicado
-- Introduzir autenticação para cenários multiusuário
-- Containerizar com Docker para facilitar execução
-- Configurar CI (lint/build/test) no GitHub Actions
+- Adicionar whitelist de CORS por ambiente.
+- Adicionar migracao automatica JSON -> Mongo para carga inicial.
+- Adicionar testes de integracao da API com Mongo em CI.

@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { api } from '../services/api'
+import { api } from '../services/api.js'
 
 const emit = defineEmits(['added'])
 
@@ -127,3 +127,4 @@ async function submit() {
     </p>
   </section>
 </template>
+

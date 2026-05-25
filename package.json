@@ -1,0 +1,11 @@
+{
+  "name": "verificador-de-ping",
+  "private": true,
+  "scripts": {
+    "dev:backend": "npm --prefix Backend run dev",
+    "dev:frontend": "npm --prefix Frontend run dev",
+    "build:frontend": "npm --prefix Frontend run build",
+    "start:backend": "npm --prefix Backend run start",
+    "webapp": "npm --prefix Backend run webapp"
+  }
+}

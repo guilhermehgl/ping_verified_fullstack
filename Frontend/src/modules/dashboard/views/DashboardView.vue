@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import DeviceList from '../components/DeviceList.vue'
+import DeviceList from '../../devices/components/DeviceList.vue'
 
 const props = defineProps({
   devices: {
@@ -101,3 +101,4 @@ const dashboardSummary = computed(() => {
     </section>
   </section>
 </template>
+

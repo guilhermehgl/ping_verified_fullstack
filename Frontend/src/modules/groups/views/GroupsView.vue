@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
-import DeviceForm from '../components/DeviceForm.vue'
-import DeviceGroups from '../components/DeviceGroups.vue'
+import DeviceForm from '../../devices/components/DeviceForm.vue'
+import DeviceGroups from '../../devices/components/DeviceGroups.vue'
 
 const props = defineProps({
   devices: {
@@ -37,3 +37,4 @@ const groupCount = computed(() => {
     </div>
   </section>
 </template>
+

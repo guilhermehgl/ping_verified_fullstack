@@ -1,10 +1,9 @@
-import express from 'express'
-import { getEvents } from '../services/events.service.js'
+import { Router } from 'express'
+import { listEvents } from '../controllers/event.controller.js'
+import { asyncHandler } from '../utils/async-handler.js'
 
-const router = express.Router()
+const router = Router()
 
-router.get('/', (req, res) => {
-  res.json(getEvents())
-})
+router.get('/', asyncHandler(listEvents))
 
 export default router
