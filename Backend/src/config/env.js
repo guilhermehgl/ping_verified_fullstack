@@ -16,6 +16,10 @@ export const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   devPort: toNumber(process.env.DEV_PORT, 3000),
   webappPort: toNumber(process.env.WEBAPP_PORT, 3004),
+  allowedOrigins: (process.env.ALLOWED_ORIGINS || 'https://ping-verified-fullstack.vercel.app,http://localhost:5173')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean),
   mongoUri: process.env.MONGO_URI || '',
   mongoDbName: process.env.MONGO_DB_NAME || 'ping_monitor',
   telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || '',
