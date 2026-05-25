@@ -1,16 +1,39 @@
-# Backend - Verificador de Ping
+# Backend - Ping Verified
 
-API responsável pelo monitoramento de dispositivos e exposição dos dados para o frontend.
+API Node.js/Express responsável por cadastro de dispositivos, histórico de eventos e monitoramento.
+
+## Stack
+
+- Node.js
+- Express 5
+- Mongoose
+- MongoDB Atlas
 
 ## Arquitetura
 
-- `routes`: definição de endpoints
-- `controllers`: camada HTTP
-- `services`: regras de negócio
-- `repositories`: acesso a dados
-- `middlewares`: tratamento global de erros e 404
-- `validators`: validação/normalização de entrada
-- `config`: variáveis de ambiente
+- `src/routes`: rotas HTTP
+- `src/controllers`: camada de entrada/saída
+- `src/services`: regras de negócio
+- `src/repositories`: acesso a dados
+- `src/middlewares`: erro global e 404
+- `src/config`: variáveis de ambiente
+
+## Variáveis de Ambiente
+
+Use `Backend/.env.example` como base para `Backend/.env`.
+
+Campos principais:
+
+- `NODE_ENV`
+- `PORT`
+- `DEV_PORT`
+- `ALLOWED_ORIGINS`
+- `MONGO_URI`
+- `MONGO_DB_NAME`
+- `PING_TIMEOUT_SECONDS`
+- `MONITORING_INTERVAL_MS`
+- `MONITOR_METHOD` (`auto`, `icmp`, `tcp`)
+- `MONITOR_TCP_PORT`
 
 ## Scripts
 
@@ -21,6 +44,15 @@ API responsável pelo monitoramento de dispositivos e exposição dos dados para
 - `npm run webapp`: build frontend + start empacotado
 - `npm run check`: valida sintaxe do entrypoint
 
-## Ambiente
+## Endpoints
 
-Use `Backend/.env.example` como base para `Backend/.env`.
+- `GET /health`
+- `GET /devices`
+- `POST /devices`
+- `PUT /devices/:id`
+- `POST /devices/bulk-delete`
+- `GET /events`
+
+## Observação sobre Monitoramento em Cloud
+
+Em provedores como Render, o monitoramento de dispositivos de rede local (LAN) pode não funcionar via ICMP por restrição de ambiente e isolamento de rede.

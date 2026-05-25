@@ -1,17 +1,42 @@
-# Frontend - Verificador de Ping
+# Frontend - Ping Verified
 
-## Estrutura profissional aplicada
+Aplicação Vue 3 responsável pela interface de cadastro, visualização de status e eventos dos dispositivos.
 
-- `app/`: composicao principal
-- `modules/`: organizacao por dominio (`devices`, `dashboard`, `groups`, `alerts`)
-- `shared/`: componentes e infraestrutura comum (`api`)
-- `styles/`: estilos globais e por componente/view
+## Stack
 
-## Melhorias aplicadas
+- Vue 3
+- Vite
+- Pinia
+- Axios
 
-- Estado centralizado com Pinia (`devices.store`).
-- Camada de API central (`shared/api/client`) com timeout e erro padrao.
-- Organizacao por dominio para facilitar escalabilidade.
-- Polling com awareness de visibilidade de aba.
-- Scripts de qualidade (`lint`, `test`) e base inicial de testes.
-- `.env.example` com `VITE_API_BASE_URL`.
+## Estrutura
+
+- `src/modules/`: organização por domínio (`devices`, `dashboard`, `groups`, `alerts`)
+- `src/shared/`: infraestrutura e componentes compartilhados
+- `src/styles/`: estilos globais, por componente e por view
+
+## Configuração de Ambiente
+
+Crie `Frontend/.env` com base no exemplo:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000
+```
+
+Para produção (Vercel), use:
+
+```env
+VITE_API_BASE_URL=https://ping-verified-fullstack.onrender.com
+```
+
+## Scripts
+
+- `npm run dev`: sobe frontend em desenvolvimento
+- `npm run build`: gera build de produção
+- `npm run preview`: pré-visualiza build local
+- `npm run lint`: lint do projeto
+- `npm run test`: executa testes
+
+## Observação
+
+O frontend depende de `VITE_API_BASE_URL` para apontar para a API correta em produção.

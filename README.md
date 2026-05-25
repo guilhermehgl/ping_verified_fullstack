@@ -1,49 +1,54 @@
-# Verificador de Ping
+# Ping Verified Fullstack
 
-Projeto fullstack para monitoramento de disponibilidade de dispositivos de rede, com frontend no Vercel e backend no Render, usando MongoDB Atlas como persistencia.
+Aplicação fullstack para cadastro e monitoramento de dispositivos, com arquitetura separada entre frontend e backend, foco em organização por domínio e base pronta para evolução.
 
-## Tecnologias
+![Demo do projeto](./docs/Gravação-de-Tela-2026-05-25-152446.gif)
+
+## Live Demo
+
+- Frontend (Vercel): [https://ping-verified-fullstack.vercel.app/#dashboard](https://ping-verified-fullstack.vercel.app/#dashboard)
+- Backend/API (Render): [https://ping-verified-fullstack.onrender.com](https://ping-verified-fullstack.onrender.com)
+
+Nota importante sobre o deploy:
+- Este deploy público é voltado para demonstração de cadastro e fluxo da aplicação.
+- O monitoramento real de ping em rede local não funciona no ambiente cloud, porque o servidor do Render não está na mesma rede Wi-Fi/LAN dos dispositivos privados.
+
+## Destaques Técnicos
+
+- Frontend em Vue 3 com arquitetura modular (`modules`, `shared`, `styles`).
+- Backend em Node.js + Express com separação em camadas (`controllers`, `services`, `repositories`).
+- Persistência em MongoDB Atlas.
+- CORS configurável por variável de ambiente.
+- Estratégia de monitoramento com fallback para ambientes que não permitem ICMP.
+
+## Stack
 
 - Frontend: Vue 3, Vite, Pinia, Axios
-- Backend: Node.js, Express 5, Mongoose, ping, Axios
-- Banco: MongoDB Atlas
+- Backend: Node.js, Express 5, Mongoose
+- Banco de dados: MongoDB Atlas
+- Deploy: Vercel (frontend) + Render (backend)
 
-## Como instalar
+## Executando Localmente
+
+1. Instalar dependências:
 
 ```bash
 npm --prefix Backend install
 npm --prefix Frontend install
 ```
 
-## Como rodar
+2. Configurar variáveis de ambiente:
+- Copiar `Backend/.env.example` para `Backend/.env`
+- Copiar `Frontend/.env.example` para `Frontend/.env`
+
+3. Subir aplicação:
 
 ```bash
 npm run dev:backend
 npm run dev:frontend
 ```
 
-## Variaveis de ambiente
-
-Backend (`Backend/.env`):
-
-```env
-DEV_PORT=3000
-WEBAPP_PORT=3004
-MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority
-MONGO_DB_NAME=ping_monitor
-PING_TIMEOUT_SECONDS=2
-MONITORING_INTERVAL_MS=60000
-TELEGRAM_BOT_TOKEN=
-TELEGRAM_CHAT_ID=
-```
-
-Frontend (`Frontend/.env`):
-
-```env
-VITE_API_BASE_URL=http://localhost:3000
-```
-
-## Endpoints
+## Endpoints Principais
 
 - `GET /health`
 - `GET /devices`
@@ -52,34 +57,7 @@ VITE_API_BASE_URL=http://localhost:3000
 - `POST /devices/bulk-delete`
 - `GET /events`
 
-## Estrutura
+## Documentação por Serviço
 
-```text
-Backend/src
-|- app/
-|- config/
-|- constants/
-|- controllers/
-|- database/
-|  |- connection.js
-|  `- models/
-|- errors/
-|- middlewares/
-|- repositories/
-|- routes/
-|- services/
-`- validators/
-```
-
-## Deploy (Vercel + Render + Atlas)
-
-1. MongoDB Atlas: criar cluster, usuario e liberar IP do Render.
-2. Render (backend): configurar `MONGO_URI`, `MONGO_DB_NAME` e demais envs.
-3. Vercel (frontend): configurar `VITE_API_BASE_URL` com URL publica do Render.
-4. Backend: habilitar CORS para o dominio do frontend em producao (proximo passo recomendado).
-
-## Proximas melhorias
-
-- Adicionar whitelist de CORS por ambiente.
-- Adicionar migracao automatica JSON -> Mongo para carga inicial.
-- Adicionar testes de integracao da API com Mongo em CI.
+- Frontend: [Frontend/README.md](./Frontend/README.md)
+- Backend: [Backend/README.md](./Backend/README.md)

@@ -1,11 +1,54 @@
+# Dependencies
+**/node_modules/
+
+# Build outputs
+Frontend/dist/
+Backend/dist/
+dist/
+dist-ssr/
+build/
+.cache/
+Frontend/.vite/
+
+# Environment files and secrets
 .env
 .env.*
 !.env.example
+!/Backend/.env.example
+!/Frontend/.env.example
 /Backend/.env
+/Frontend/.env
+
+# Runtime/local data
 /data/devices.json
 /Backend/data/devices.json
 /Backend/src/data/devices.json
-**/node_modules/
-Frontend/dist/
-Backend/dist/
+
+# Logs
+logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Deploy/platform local folders
+.vercel/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Local config files
+*.local
+
+# Editor/IDE
+.vscode/
+.idea/
+Frontend/.vscode/
