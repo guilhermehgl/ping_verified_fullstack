@@ -5,7 +5,11 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') })
+const nodeEnv = process.env.NODE_ENV || 'development'
+
+if (nodeEnv !== 'production') {
+  dotenv.config({ path: path.resolve(__dirname, '../../.env'), quiet: true })
+}
 
 const toNumber = (value, fallback) => {
   const parsed = Number(value)
@@ -13,7 +17,8 @@ const toNumber = (value, fallback) => {
 }
 
 export const env = {
-  nodeEnv: process.env.NODE_ENV || 'development',
+  nodeEnv,
+  port: toNumber(process.env.PORT, toNumber(process.env.DEV_PORT, 3000)),
   devPort: toNumber(process.env.DEV_PORT, 3000),
   webappPort: toNumber(process.env.WEBAPP_PORT, 3004),
   allowedOrigins: (process.env.ALLOWED_ORIGINS || 'https://ping-verified-fullstack.vercel.app,http://localhost:5173')

@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename)
 const frontendDistPath = path.resolve(__dirname, '../../Frontend/dist')
 const frontendIndexPath = path.join(frontendDistPath, 'index.html')
 const isPackagedMode = process.argv.includes('--packaged')
-const port = process.env.PORT || 3004
+const port = isPackagedMode ? env.webappPort : env.port
 
 const app = createApp()
 

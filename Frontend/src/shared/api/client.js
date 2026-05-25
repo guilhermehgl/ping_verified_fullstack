@@ -3,7 +3,7 @@ import axios from 'axios'
 const devApiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3004'
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.DEV ? devApiBaseUrl : '',
+  baseURL: import.meta.env.VITE_API_BASE_URL || devApiBaseUrl,
   timeout: 10000
 })
 
