@@ -26,6 +26,14 @@ export function createApp() {
   )
   app.use(express.json())
 
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'Servidor online',
+      frontend: 'https://ping-verified-fullstack.vercel.app/#dashboard',
+      healthcheck: '/health'
+    })
+  })
+
   app.get('/health', (req, res) => {
     res.json({ status: 'ok' })
   })
