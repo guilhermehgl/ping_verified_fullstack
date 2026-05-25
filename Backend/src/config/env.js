@@ -25,5 +25,7 @@ export const env = {
   telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || '',
   telegramChatId: process.env.TELEGRAM_CHAT_ID || '',
   pingTimeoutSeconds: toNumber(process.env.PING_TIMEOUT_SECONDS, 2),
-  monitoringIntervalMs: toNumber(process.env.MONITORING_INTERVAL_MS, 60000)
+  monitoringIntervalMs: toNumber(process.env.MONITORING_INTERVAL_MS, 60000),
+  monitorMethod: (process.env.MONITOR_METHOD || 'auto').toLowerCase(),
+  monitorTcpPort: toNumber(process.env.MONITOR_TCP_PORT, 80)
 }

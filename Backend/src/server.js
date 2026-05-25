@@ -26,8 +26,19 @@ if (fs.existsSync(frontendDistPath)) {
 }
 
 await connectDatabase()
-await runMonitoring()
-setInterval(runMonitoring, env.monitoringIntervalMs)
+try {
+  await runMonitoring()
+} catch (error) {
+  console.error('Falha no monitoramento inicial:', error.message)
+}
+
+setInterval(async () => {
+  try {
+    await runMonitoring()
+  } catch (error) {
+    console.error('Falha no ciclo de monitoramento:', error.message)
+  }
+}, env.monitoringIntervalMs)
 
 app.listen(port, () => {
   console.log(`Backend rodando na porta ${port}`)
