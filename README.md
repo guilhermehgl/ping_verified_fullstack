@@ -6,8 +6,6 @@ O Ping Verified nasceu de uma necessidade de monitoramento de infraestrutura de 
 
 [Demonstração pública](https://ping-verified-fullstack.vercel.app/#dashboard) · [CI](https://github.com/guilhermehgl/ping_verified_fullstack/actions/workflows/ci.yml)
 
-> Esta branch prepara uma demonstração isolada. A versão pública só receberá estas mudanças após revisão, merge e publicação autorizados.
-
 ![Interface de referência](./docs/Gravação-de-Tela-2026-05-25-152446.gif)
 
 O GIF registra a interface original. A versão simulada preserva os fluxos e a identidade visual e acrescenta uma identificação explícita de demonstração.
@@ -73,11 +71,10 @@ Opcional: a interface empacotada local continua disponível por `npm run webapp`
 
 Os testes usam mocks de banco, ICMP, TCP e Telegram. Cobrem isolamento público, validações, limiares, falhas e concorrência de ciclos, fallback, seleção com ObjectIds, CRUD fictício e estados de carregamento/erro/vazio. O CI executa os comandos em PRs para master e pushes em master/portfolio, sem banco ou secrets. Não existe workflow de deploy.
 
-## Publicação posterior — exige autorização
+## Hospedagem
 
 - Vercel: diretório Frontend, build `npm run build`, saída dist. A demonstração é padrão e ignora a antiga VITE_API_BASE_URL. Não configurar modo real para hospedagem pública.
 - Render: diretório Backend, instalação `npm ci` e start `npm start`, sem --local. O novo processo atende health sem MongoDB/Telegram e recusa inventário/eventos.
-- A API antiga só será protegida quando o backend corrigido for efetivamente publicado. Um preview frontend não corrige a API antiga.
-- Nenhum seed, migração ou alteração de dados é necessário. Não promover previews nem fazer merge antes da aprovação.
+- A demonstração não requer seed, migração ou alteração de dados.
 
 [Backend](Backend/README.md) · [Frontend](Frontend/README.md)
