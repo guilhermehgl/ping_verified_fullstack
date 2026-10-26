@@ -1,42 +1,13 @@
-# Frontend - Ping Verified
+# Frontend — Ping Verified
 
-Aplicação Vue 3 responsável pela interface de cadastro, visualização de status e eventos dos dispositivos.
+Vue 3, Vite e Pinia, com módulos devices/dashboard/groups/alerts e componentes/estilos compartilhados.
 
-## Stack
+`npm ci` · `npm run dev` · `npm test` · `npm run lint` · `npm run build`.
 
-- Vue 3
-- Vite
-- Pinia
-- Axios
+O padrão é uma demonstração em memória, sem API, persistência remota ou sondagens. Recarregar restaura os exemplos. Não existe chave de MongoDB ou Telegram no navegador.
 
-## Estrutura
+Para monitoramento autorizado no próprio computador, crie .env.local conforme .env.example: VITE_APP_MODE=local e VITE_API_BASE_URL=http://127.0.0.1:3000. O modo real só é aceito em hostname loopback e exige API HTTP também em loopback. Um domínio público continua usando a simulação mesmo se VITE_APP_MODE for definido incorretamente como local.
 
-- `src/modules/`: organização por domínio (`devices`, `dashboard`, `groups`, `alerts`)
-- `src/shared/`: infraestrutura e componentes compartilhados
-- `src/styles/`: estilos globais, por componente e por view
+Dashboard/Grupos e identidade visual preservados, com seleção exata por ID string e estados distintos de carregamento, erro e vazio. Os testes incluem componentes com ObjectIds, CRUD fictício sem HTTP e recuperação após falha.
 
-## Configuração de Ambiente
-
-Crie `Frontend/.env` com base no exemplo:
-
-```env
-VITE_API_BASE_URL=http://localhost:3000
-```
-
-Para produção (Vercel), use:
-
-```env
-VITE_API_BASE_URL=https://ping-verified-fullstack.onrender.com
-```
-
-## Scripts
-
-- `npm run dev`: sobe frontend em desenvolvimento
-- `npm run build`: gera build de produção
-- `npm run preview`: pré-visualiza build local
-- `npm run lint`: lint do projeto
-- `npm run test`: executa testes
-
-## Observação
-
-O frontend depende de `VITE_API_BASE_URL` para apontar para a API correta em produção.
+[Instruções e limites](../README.md).

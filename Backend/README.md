@@ -1,58 +1,14 @@
-# Backend - Ping Verified
+# Backend — Ping Verified
 
-API Node.js/Express responsável por cadastro de dispositivos, histórico de eventos e monitoramento.
+Express 5 + Mongoose, organizado em routes/controllers/services/repositories.
 
-## Stack
+- `npm ci`: instalação reproduzível.
+- `npm start`: processo público restrito, sem banco/monitoramento. /devices e /events respondem 403.
+- `npm run dev` ou `npm run start:local`: monitoramento autorizado em ambiente não produtivo/não hospedado, somente em 127.0.0.1.
+- `npm test`: testes isolados. `npm run check`: sintaxe de todos os arquivos src, sem iniciar a aplicação.
 
-- Node.js
-- Express 5
-- Mongoose
-- MongoDB Atlas
+Configure .env.example somente para o modo local. MONGO_URI e MONGO_DB_NAME apontam para um banco próprio. ALLOWED_ORIGINS permite os frontends locais. MONITOR_METHOD aceita auto/icmp/tcp; MONITOR_TCP_PORT indica a porta TCP verificada. PING_TIMEOUT_SECONDS e MONITORING_INTERVAL_MS controlam espera e intervalo. TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID são opcionais e nunca devem ir para o Git.
 
-## Arquitetura
+A primeira leitura estabelece o estado. Depois são exigidas três falhas para queda e dois sucessos para recuperação. Eventos registram transições; falha de persistência não bloqueia o estado e não possui reenvio automático. Telegram tem timeout de cinco segundos. Não exponha o modo local por túnel ou proxy.
 
-- `src/routes`: rotas HTTP
-- `src/controllers`: camada de entrada/saída
-- `src/services`: regras de negócio
-- `src/repositories`: acesso a dados
-- `src/middlewares`: erro global e 404
-- `src/config`: variáveis de ambiente
-
-## Variáveis de Ambiente
-
-Use `Backend/.env.example` como base para `Backend/.env`.
-
-Campos principais:
-
-- `NODE_ENV`
-- `PORT`
-- `DEV_PORT`
-- `ALLOWED_ORIGINS`
-- `MONGO_URI`
-- `MONGO_DB_NAME`
-- `PING_TIMEOUT_SECONDS`
-- `MONITORING_INTERVAL_MS`
-- `MONITOR_METHOD` (`auto`, `icmp`, `tcp`)
-- `MONITOR_TCP_PORT`
-
-## Scripts
-
-- `npm run dev`: desenvolvimento com nodemon
-- `npm run start`: execução padrão
-- `npm run start:packaged`: execução para modo webapp
-- `npm run build:frontend`: build do frontend
-- `npm run webapp`: build frontend + start empacotado
-- `npm run check`: valida sintaxe do entrypoint
-
-## Endpoints
-
-- `GET /health`
-- `GET /devices`
-- `POST /devices`
-- `PUT /devices/:id`
-- `POST /devices/bulk-delete`
-- `GET /events`
-
-## Observação sobre Monitoramento em Cloud
-
-Em provedores como Render, o monitoramento de dispositivos de rede local (LAN) pode não funcionar via ICMP por restrição de ambiente e isolamento de rede.
+[Endpoints, decisões e execução](../README.md).
