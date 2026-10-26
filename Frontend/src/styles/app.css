@@ -122,3 +122,7 @@
     min-width: 0;
   }
 }
+
+.app-demo-note { color: var(--text-secondary); font-size: 13px; margin: 16px 4px; }
+.app-feedback { padding: 16px; margin-bottom: 20px; }
+.app-feedback button { color: var(--text-primary); background: var(--surface-3); border: 1px solid var(--border-strong); border-radius: 6px; padding: 10px 16px; }

@@ -1,6 +1,6 @@
 import { ref, computed, watch } from 'vue'
 
-export function useAlerts(devices) {
+export function useAlerts(devices, { simulated = false } = {}) {
   const alerts = ref([])
   // Guarda apenas o mínimo necessário para detectar transições entre polls.
   const previousDevices = ref([])
@@ -14,7 +14,7 @@ export function useAlerts(devices) {
   }
 
   function notify(title, body) {
-    if (!('Notification' in window)) return
+    if (simulated || !('Notification' in window)) return
     if (Notification.permission !== 'granted') return
     new Notification(title, { body })
   }

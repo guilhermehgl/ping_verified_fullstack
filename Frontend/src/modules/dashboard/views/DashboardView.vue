@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import DeviceList from '../../devices/components/DeviceList.vue'
 
 const props = defineProps({
+  simulated: { type: Boolean, default: false },
   devices: {
     type: Array,
     default: () => []
@@ -34,11 +35,11 @@ const lastCheckLabel = computed(() => {
 
 const dashboardSummary = computed(() => {
   if (!props.devices.length) {
-    return 'Aguardando a primeira leitura dos dispositivos.'
+    return 'Nenhum dispositivo cadastrado.'
   }
 
   if (!offlineDevices.value.length) {
-    return 'Todos os dispositivos estão respondendo normalmente.'
+    return props.simulated ? 'Todos os dispositivos de exemplo estão online (simulação).' : 'Todos os dispositivos estão respondendo normalmente.'
   }
 
   const count = offlineDevices.value.length
@@ -52,9 +53,13 @@ const dashboardSummary = computed(() => {
   <section class="dashboard-page">
     <header class="dashboard-page__header">
       <div class="dashboard-page__title-block">
-        <p class="dashboard-page__eyebrow">Status do ambiente</p>
+        <p class="dashboard-page__eyebrow">
+          Status do ambiente
+        </p>
         <h2>Dashboard</h2>
-        <p class="dashboard-page__summary">{{ dashboardSummary }}</p>
+        <p class="dashboard-page__summary">
+          {{ dashboardSummary }}
+        </p>
       </div>
     </header>
 
@@ -68,20 +73,22 @@ const dashboardSummary = computed(() => {
       <article class="dashboard-stat ui-surface">
         <span class="dashboard-stat__label">Online</span>
         <strong class="dashboard-stat__value">{{ onlineDevices }}</strong>
-        <span class="dashboard-stat__meta">Respondendo normalmente</span>
+        <span class="dashboard-stat__meta">{{ simulated ? 'Estado simulado' : 'Respondendo normalmente' }}</span>
       </article>
 
       <article class="dashboard-stat ui-surface">
-        <span class="dashboard-stat__label">Última verificação</span>
+        <span class="dashboard-stat__label">{{ simulated ? 'Atualização simulada' : 'Última verificação' }}</span>
         <strong class="dashboard-stat__value">{{ lastCheckLabel }}</strong>
-        <span class="dashboard-stat__meta">Horário mais recente do monitoramento</span>
+        <span class="dashboard-stat__meta">{{ simulated ? 'Estado fictício, sem medição de rede' : 'Horário mais recente do monitoramento' }}</span>
       </article>
     </section>
 
     <section class="dashboard-panel ui-surface">
       <div class="dashboard-panel__header">
         <div>
-          <p class="dashboard-panel__eyebrow">Fila de atenção</p>
+          <p class="dashboard-panel__eyebrow">
+            Fila de atenção
+          </p>
           <h3>Dispositivos offline</h3>
         </div>
 
@@ -90,7 +97,10 @@ const dashboardSummary = computed(() => {
         </span>
       </div>
 
-      <p v-if="lastCheck" class="dashboard-panel__last-check">
+      <p
+        v-if="lastCheck"
+        class="dashboard-panel__last-check"
+      >
         Atualizado às {{ new Date(lastCheck).toLocaleTimeString() }}
       </p>
 
