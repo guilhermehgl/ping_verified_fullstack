@@ -1,45 +1,29 @@
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import express from 'express'
-
+import { fileURLToPath } from 'node:url'
+import { resolve } from 'node:path'
 import { createApp } from './app/app.js'
 import { env } from './config/env.js'
-import { connectDatabase } from './database/connection.js'
-import { runMonitoring } from './services/monitoring.service.js'
+import { assertLocalRuntime } from './config/local-mode.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const frontendDistPath = path.resolve(__dirname, '../../Frontend/dist')
-const frontendIndexPath = path.join(frontendDistPath, 'index.html')
-const isPackagedMode = process.argv.includes('--packaged')
-const port = isPackagedMode ? env.webappPort : env.port
-
-const app = createApp()
-
-if (fs.existsSync(frontendDistPath)) {
-  app.use(express.static(frontendDistPath))
-  app.get(/^(?!\/(?:devices|events|health)(?:\/|$)).*/, (req, res) => {
-    res.sendFile(frontendIndexPath)
-  })
-}
-
-await connectDatabase()
-try {
-  await runMonitoring()
-} catch (error) {
-  console.error('Falha no monitoramento inicial:', error.message)
-}
-
-setInterval(async () => {
-  try {
-    await runMonitoring()
-  } catch (error) {
-    console.error('Falha no ciclo de monitoramento:', error.message)
+export async function startServer({ localMode = false, port = env.port, packaged = false } = {}) {
+  if (localMode) assertLocalRuntime()
+  const app = createApp({ localMode, packaged })
+  let timer
+  if (localMode) {
+    // Public startup never initializes the database, probes or notifications.
+    const { connectDatabase } = await import('./database/connection.js')
+    const { runMonitoring } = await import('./services/monitoring.service.js')
+    await connectDatabase()
+    const cycle = () => runMonitoring().catch(() => console.error('Falha no ciclo de monitoramento'))
+    await cycle()
+    timer = setInterval(cycle, env.monitoringIntervalMs)
   }
-}, env.monitoringIntervalMs)
+  const server = app.listen(port, localMode ? '127.0.0.1' : '0.0.0.0')
+  server.on('close', () => clearInterval(timer))
+  server.on('error', () => clearInterval(timer))
+  return server
+}
 
-app.listen(port, () => {
-  console.log(`Backend rodando na porta ${port}`)
-})
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  await startServer({ localMode: process.argv.includes('--local'), packaged: process.argv.includes('--packaged'),
+    port: process.argv.includes('--packaged') ? env.webappPort : env.port })
+}

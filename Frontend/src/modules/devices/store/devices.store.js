@@ -5,7 +5,9 @@ export const useDevicesStore = defineStore('devices', {
   state: () => ({
     items: [],
     isReloadingPage: false,
-    lastError: ''
+    lastError: '',
+    hasLoaded: false,
+    isLoading: false
   }),
   getters: {
     offlineCount: (state) => state.items.filter((device) => !device.online).length
@@ -20,13 +22,16 @@ export const useDevicesStore = defineStore('devices', {
     },
     async loadDevices(showReloadScreen = false) {
       try {
-        this.lastError = ''
+        this.isLoading = true
         if (showReloadScreen) this.isReloadingPage = true
         const data = await fetchDevices()
         this.syncDevices(data)
+        this.hasLoaded = true
+        this.lastError = ''
       } catch (error) {
         this.lastError = error.message
       } finally {
+        this.isLoading = false
         if (showReloadScreen) this.isReloadingPage = false
       }
     },

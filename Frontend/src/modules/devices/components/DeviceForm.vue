@@ -50,7 +50,7 @@ async function submit() {
     emit('added')
   } catch (err) {
     console.error('Erro ao adicionar dispositivo:', err)
-    errorMessage.value = err.response?.data?.error || 'Erro ao adicionar dispositivo.'
+    errorMessage.value = err.message || 'Erro ao adicionar dispositivo.'
   } finally {
     isSubmitting.value = false
   }

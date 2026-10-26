@@ -73,8 +73,8 @@ watchEffect(() => {
     }
   })
 
-  const availableIds = new Set(props.devices.map(device => Number(device.id)))
-  selectedDeviceIds.value = selectedDeviceIds.value.filter((id) => availableIds.has(Number(id)))
+  const availableIds = new Set(props.devices.map(device => String(device.id)))
+  selectedDeviceIds.value = selectedDeviceIds.value.filter((id) => availableIds.has(String(id)))
 })
 
 function toggleGroup(name) {
@@ -115,11 +115,11 @@ function isSelectingGroup(groupName) {
 }
 
 function isSelected(deviceId) {
-  return selectedDeviceIds.value.includes(Number(deviceId))
+  return selectedDeviceIds.value.includes(String(deviceId))
 }
 
 function toggleSelection(deviceId) {
-  const normalizedId = Number(deviceId)
+  const normalizedId = String(deviceId)
 
   if (isSelected(normalizedId)) {
     selectedDeviceIds.value = selectedDeviceIds.value.filter((id) => id !== normalizedId)
@@ -131,7 +131,7 @@ function toggleSelection(deviceId) {
 
 function getSelectedDevices(group) {
   const selectedIds = new Set(selectedDeviceIds.value)
-  return group.devices.filter((device) => selectedIds.has(Number(device.id)))
+  return group.devices.filter((device) => selectedIds.has(String(device.id)))
 }
 
 async function confirmSelection(group) {
@@ -167,7 +167,7 @@ async function deleteSelectedDevices(group, devicesToDelete) {
     emit('changed')
   } catch (err) {
     console.error('Erro ao remover dispositivos:', err)
-    actionError.value = err.response?.data?.error || 'Erro ao remover dispositivos.'
+    actionError.value = err.message || 'Erro ao remover dispositivos.'
   } finally {
     loadingGroupName.value = ''
   }
@@ -206,7 +206,7 @@ async function saveCurrentDevice(payload) {
     editError.value = ''
   } catch (err) {
     console.error('Erro ao editar dispositivo:', err)
-    editError.value = err.response?.data?.error || 'Erro ao editar dispositivo.'
+    editError.value = err.message || 'Erro ao editar dispositivo.'
   } finally {
     isSavingEdit.value = false
   }
