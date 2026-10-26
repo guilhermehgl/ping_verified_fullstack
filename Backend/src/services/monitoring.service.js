@@ -14,7 +14,13 @@ async function executeMonitoring() {
   deviceStatus = await Promise.all(
     devices.map(async (device) => {
       const previous = deviceStatus.find((item) => item.id === device.id)
-      const pingResult = await checkDevice(device.ip)
+      let pingResult
+      try {
+        pingResult = await checkDevice(device.ip)
+      } catch {
+        // A failed attempt counts as a failure without skipping other devices.
+        pingResult = { online: false, time: null }
+      }
       const isFirstCheck = !previous
 
       let online = previous?.online
@@ -44,19 +50,25 @@ async function executeMonitoring() {
       }
 
       if (previous && previous.online !== online) {
-        await addEvent({
+        const event = {
           deviceId: device.id,
           name: device.name,
           ip: device.ip,
           from: previous.online ? 'online' : 'offline',
           to: online ? 'online' : 'offline',
           at: now
-        })
-
-        if (!online) {
-          await sendTelegram(`Dispositivo ${device.name} (${device.ip}) ficou OFFLINE`)
-        } else {
-          await sendTelegram(`Dispositivo ${device.name} voltou para ONLINE`)
+        }
+        try {
+          await addEvent(event)
+        } catch {
+          console.error('Falha ao persistir transição de dispositivo')
+        }
+        try {
+          await sendTelegram(!online
+            ? 'Dispositivo ' + device.name + ' (' + device.ip + ') ficou OFFLINE'
+            : 'Dispositivo ' + device.name + ' voltou para ONLINE')
+        } catch {
+          console.error('Falha ao notificar transição de dispositivo')
         }
       }
 

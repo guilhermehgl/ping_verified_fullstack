@@ -1,54 +1,42 @@
+import { isIP } from 'node:net'
 import { AppError } from '../errors/app-error.js'
 import { DEFAULT_GROUP } from '../constants/monitoring.js'
 
-export function normalizeName(value) {
-  return value?.trim()
+function text(value, label, max, optional = false) {
+  if (optional && value === undefined) return DEFAULT_GROUP
+  if (typeof value !== 'string' || !value.trim() || value.trim().length > max) {
+    throw new AppError(label + ' deve ser texto preenchido de até ' + max + ' caracteres', 400)
+  }
+  return value.trim()
 }
 
+export function normalizeName(value) { return text(value, 'Nome', 100) }
+export function normalizeGroup(value) { return text(value, 'Grupo', 60, true) }
 export function normalizeIp(value) {
-  return value?.trim()
+  const host = text(value, 'IP ou hostname', 253)
+  const hostname = host.replace(/\.$/, '')
+  const validHostname = !/^[\d.]+$/.test(hostname) && hostname.split('.').every(label =>
+    /^[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?$/i.test(label))
+  if (!isIP(host) && !validHostname) throw new AppError('IP ou hostname invalido', 400)
+  return host
 }
 
-export function normalizeGroup(value) {
-  return value?.trim() || DEFAULT_GROUP
+export function validId(id) {
+  if (typeof id !== 'string' || !/^[a-f\d]{24}$/i.test(id)) throw new AppError('ID invalido', 400)
+  return id
 }
 
 export function validateCreateDeviceInput(body) {
-  const name = normalizeName(body?.name)
-  const ip = normalizeIp(body?.ip)
-  const group = normalizeGroup(body?.group)
-
-  if (!name || !ip) {
-    throw new AppError('Nome e IP sao obrigatorios', 400)
-  }
-
-  return { name, ip, group }
+  return { name: normalizeName(body?.name), ip: normalizeIp(body?.ip), group: normalizeGroup(body?.group) }
 }
 
 export function validateUpdateDeviceInput(params, body) {
-  const id = params?.id
-  const name = normalizeName(body?.name)
-  const ip = normalizeIp(body?.ip)
-
-  if (!id || typeof id !== 'string') {
-    throw new AppError('ID invalido', 400)
-  }
-
-  if (!name || !ip) {
-    throw new AppError('Nome e IP sao obrigatorios', 400)
-  }
-
-  return { id, name, ip }
+  return { id: validId(params?.id), name: normalizeName(body?.name), ip: normalizeIp(body?.ip) }
 }
 
 export function validateBulkDeleteInput(body) {
-  const ids = Array.isArray(body?.ids)
-    ? body.ids.filter((id) => typeof id === 'string' && id.trim())
-    : []
-
-  if (!ids.length) {
-    throw new AppError('Selecione ao menos um dispositivo', 400)
+  if (!Array.isArray(body?.ids) || !body.ids.length || body.ids.length > 100) {
+    throw new AppError('Selecione entre 1 e 100 dispositivos', 400)
   }
-
-  return ids
+  return [...new Set(body.ids.map(validId))]
 }
